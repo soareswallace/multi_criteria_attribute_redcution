@@ -15,5 +15,5 @@ def calculate_instances_neighbours(data, test_instance):
         equal_arrays = comparison.all()
         if not equal_arrays:
             distance_between_instances = calculate_euclidean_distance(test_instance, data_instance)
-            if distance_between_instances < 1:
+            if distance_between_instances <= MAX_DISTANCE:
                 print(distance_between_instances)

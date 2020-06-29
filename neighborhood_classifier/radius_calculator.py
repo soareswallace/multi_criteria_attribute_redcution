@@ -3,6 +3,7 @@ import numpy as np
 
 MIN_DISTANCE = 0
 MAX_DISTANCE = 1
+MAX_NEIGHBORS = 7
 
 
 def calculate_euclidean_distance(instance_a, instance_b):
@@ -10,10 +11,19 @@ def calculate_euclidean_distance(instance_a, instance_b):
 
 
 def calculate_instances_neighbours(data, test_instance):
+    distances = list()
     for data_instance in data:
         comparison = data_instance == test_instance
         equal_arrays = comparison.all()
         if not equal_arrays:
+            #TODO Implement using neighborhood radius
             distance_between_instances = calculate_euclidean_distance(test_instance, data_instance)
-            if distance_between_instances <= MAX_DISTANCE:
-                print(distance_between_instances)
+            distances.append((data_instance, distance_between_instances))
+    distances.sort(key=lambda tup: tup[1])
+    neighbors = list()
+    for i in range(MAX_NEIGHBORS):
+        neighbors.append(distances[i][0])
+    return neighbors
+
+
+

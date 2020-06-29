@@ -14,7 +14,7 @@ def main():
         info = Instance(instance, instance_neighborhood)
         instances_info.append(info)
 
-    print(instances_info)
+    print(len(instances_info))
 
 if __name__ == "__main__":
     main()

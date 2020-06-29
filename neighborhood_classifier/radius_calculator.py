@@ -15,9 +15,10 @@ def calculate_instances_neighbours(data, test_instance):
     for data_instance in data:
         comparison = data_instance == test_instance
         equal_arrays = comparison.all()
+        array_len = len(data_instance) - 1
         if not equal_arrays:
             #TODO Implement using neighborhood radius
-            distance_between_instances = calculate_euclidean_distance(test_instance, data_instance)
+            distance_between_instances = calculate_euclidean_distance(test_instance[:array_len], data_instance[:array_len])
             distances.append((data_instance, distance_between_instances))
     distances.sort(key=lambda tup: tup[1])
     neighbors = list()

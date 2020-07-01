@@ -1,6 +1,7 @@
 from load_data.load_data import load_from_data
 from neighborhood_classifier.radius_calculator import calculate_instances_neighbours
 from code_classes.Instance import Instance
+from neighborhood_classifier.prediction_compute import predict_class
 
 
 def main():
@@ -14,7 +15,10 @@ def main():
         info = Instance(instance, instance_neighborhood)
         instances_info.append(info)
 
-    print(len(instances_info))
+    for instance in instances_info:
+        prediction_class = predict_class(instance)
+        instance.set_prediction_class(prediction_class)
+
 
 if __name__ == "__main__":
     main()

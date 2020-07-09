@@ -1,11 +1,13 @@
 from load_data.load_data import load_from_data
-from neighborhood_classifier.radius_calculator import calculate_instances_neighbours
+from neighborhood_classifier.nec_phase_functions import calculate_instances_neighbours
 from code_classes.Instance import Instance
 from neighborhood_classifier.prediction_compute import predict_class
 
 
 def main():
-    file_name = 'data/heart.csv'
+    print("Loading data from CSV")
+
+    file_name = 'data/vehicle.csv'
     data = load_from_data(file_name).to_numpy()
     data_size = len(data)
     correct_predictions = 0
@@ -13,12 +15,14 @@ def main():
 
     instances_info = list()
 
-##NEC PHASE
+    print("Running NEC phase...")
+    #TODO Bring this line of code to the nec_phase_functions file
     for instance in data:
         instance_neighborhood = calculate_instances_neighbours(data, instance)
         info = Instance(instance, instance_neighborhood)
         instances_info.append(info)
 
+    print("Predicting classes based on NEC...")
     for instance in instances_info:
         prediction_class = predict_class(instance)
         instance.set_prediction_class(prediction_class)
@@ -27,9 +31,9 @@ def main():
         else:
             incorrect_predictions += 1
 
-    print("Predictions using KNN reach " + str(correct_predictions/len(data)*100) + "%")
+    print("Predictions using NEC reach " + str((correct_predictions/data_size)*100) + "%")
 
-##NDER PHASE
+    print("Going to NDER phase...")
     E_at = incorrect_predictions/data_size
 
 

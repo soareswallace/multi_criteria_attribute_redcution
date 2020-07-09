@@ -4,10 +4,11 @@ from code_classes import Instance
 def count_class_occurencies(array_of_instances):
     classes_count = {}
     for instance in array_of_instances:
-        if instance[13] in classes_count:
-            classes_count[instance[13]] += 1
+        last_index_position = len(instance) - 1
+        if instance[last_index_position] in classes_count:
+            classes_count[instance[last_index_position]] += 1
         else:
-            classes_count[instance[13]] = 1
+            classes_count[instance[last_index_position]] = 1
     return classes_count
 
 

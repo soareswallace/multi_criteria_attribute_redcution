@@ -20,4 +20,5 @@ class Instance:
         return self.prediction_class
 
     def get_instance_class(self):
-        return self.instance_value[13]
+        last_index_position = len(self.instance_value) - 1
+        return self.instance_value[last_index_position]

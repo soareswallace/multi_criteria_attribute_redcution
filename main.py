@@ -1,7 +1,6 @@
 from load_data.load_data import load_from_data
-from neighborhood_classifier.nec_phase_functions import calculate_instances_neighbours
-from code_classes.Instance import Instance
-from neighborhood_classifier.prediction_compute import predict_class
+from neighborhood_classifier.nec_phase_functions import generate_instances_info
+from neighborhood_classifier.prediction_compute import predict_classes_in_instances_info
 
 
 def main():
@@ -10,31 +9,37 @@ def main():
     file_name = 'data/vehicle.csv'
     data = load_from_data(file_name).to_numpy()
     data_size = len(data)
-    correct_predictions = 0
-    incorrect_predictions = 0
+    number_of_attributes = len(data[0]) - 1
 
-    instances_info = list()
-
+    print("Initial phase using the whole attributes available.")
     print("Running NEC phase...")
-    #TODO Bring this line of code to the nec_phase_functions file
-    for instance in data:
-        instance_neighborhood = calculate_instances_neighbours(data, instance)
-        info = Instance(instance, instance_neighborhood)
-        instances_info.append(info)
+    instances_info = generate_instances_info(data, number_of_attributes)
 
     print("Predicting classes based on NEC...")
-    for instance in instances_info:
-        prediction_class = predict_class(instance)
-        instance.set_prediction_class(prediction_class)
-        if instance.get_prediction_class() == instance.get_instance_class():
-            correct_predictions += 1
-        else:
-            incorrect_predictions += 1
+    instances_info, correct_predictions, incorrect_predictions = predict_classes_in_instances_info(instances_info)
 
     print("Predictions using NEC reach " + str((correct_predictions/data_size)*100) + "%")
 
     print("Going to NDER phase...")
     E_at = incorrect_predictions/data_size
+
+    number_of_attributes_used = 1
+
+    while number_of_attributes_used < number_of_attributes:
+        print("Generating a new data instance info for " + str(number_of_attributes_used) + " attribute")
+        instances_info = generate_instances_info(data, number_of_attributes_used)
+
+        print("Predicting classes based on new NEC...")
+        instances_info, correct_predictions, incorrect_predictions = predict_classes_in_instances_info(instances_info)
+
+        print("Correct predictions using new NEC: " + str((correct_predictions / data_size) * 100) + "%")
+
+        better_E_a = incorrect_predictions/data_size
+
+        if better_E_a < E_at:
+            print("[ALERT] - Founded a better number of attributes: " + str(number_of_attributes_used))
+
+        number_of_attributes_used += 1
 
 
 if __name__ == "__main__":

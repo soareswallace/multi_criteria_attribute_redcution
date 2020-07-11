@@ -57,8 +57,12 @@ def main():
     print("[ALERT] - Using " + str(optimum_number_of_attributes) + " attributes.")
 
     print("Entering the NDC phase, using correlation coefficient")
+
     sigma = (a*d-b*c)/sqrt((a+b)*(c+d)*(a+c)*(b+d))
     D_sigma = exp(-(1-sigma))
+
+    disagremment_measure = (b + c)/(a+b+c+d)
+    D_disagremment_measure = 1 - disagremment_measure
 
 if __name__ == "__main__":
     main()

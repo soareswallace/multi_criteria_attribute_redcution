@@ -1,1 +1,1 @@
-# multi_criteria_attribute_redcution
+# Neighborhood attribute reduction: a multi‐criterion approach

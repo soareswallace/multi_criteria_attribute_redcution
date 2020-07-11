@@ -21,16 +21,23 @@ def predict_class(instance_to_predict: Instance):
     return predict_class_base_on_max_occurencies(classes_occurencies)
 
 
-def predict_classes_in_instances_info(instances_info):
+def predict_classes_in_instances_info(instances_info, using_whole_data_attributes=True):
     correct_predictions = 0
     incorrect_predictions = 0
 
     for instance in instances_info:
         prediction_class = predict_class(instance)
-        instance.set_prediction_class(prediction_class)
-        if instance.get_prediction_class() == instance.get_instance_class():
-            correct_predictions += 1
+        if using_whole_data_attributes:
+            instance.set_prediction_class_using_whole_attributes(prediction_class)
+            if instance.get_prediction_class_using_whole_attributes() == instance.get_instance_class():
+                correct_predictions += 1
+            else:
+                incorrect_predictions += 1
         else:
-            incorrect_predictions += 1
+            instance.set_prediction_class_using_reduced_attributes(prediction_class)
+            if instance.get_prediction_class_using_reduced_attributes() == instance.get_instance_class():
+                correct_predictions += 1
+            else:
+                incorrect_predictions += 1
 
     return instances_info, correct_predictions, incorrect_predictions

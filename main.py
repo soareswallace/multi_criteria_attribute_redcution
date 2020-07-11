@@ -1,6 +1,8 @@
 from load_data.load_data import load_from_data
 from neighborhood_classifier.nec_phase_functions import generate_instances_info
 from neighborhood_classifier.prediction_compute import predict_classes_in_instances_info
+from NDC_files.ndc_phase_functions import compute_ndc_attributes
+from math import sqrt, exp
 
 
 def main():
@@ -13,7 +15,8 @@ def main():
 
     print("Initial phase using the whole attributes available.")
     print("Running NEC phase...")
-    instances_info = generate_instances_info(data, number_of_attributes)
+    instances_info = list()
+    instances_info = generate_instances_info(data, number_of_attributes, instances_info)
 
     print("Predicting classes based on NEC...")
     instances_info, correct_predictions, incorrect_predictions = predict_classes_in_instances_info(instances_info)
@@ -24,23 +27,38 @@ def main():
     E_at = incorrect_predictions/data_size
 
     number_of_attributes_used = 1
+    optimum_number_of_attributes = 1
+    optimum_E_a = E_at
 
     while number_of_attributes_used < number_of_attributes:
         print("Generating a new data instance info for " + str(number_of_attributes_used) + " attribute")
-        instances_info = generate_instances_info(data, number_of_attributes_used)
+        instances_info = generate_instances_info(data, number_of_attributes_used, instances_info)
 
         print("Predicting classes based on new NEC...")
-        instances_info, correct_predictions, incorrect_predictions = predict_classes_in_instances_info(instances_info)
+        instances_info, correct_predictions, incorrect_predictions = predict_classes_in_instances_info(
+            instances_info,
+            False
+        )
 
         print("Correct predictions using new NEC: " + str((correct_predictions / data_size) * 100) + "%")
 
-        better_E_a = incorrect_predictions/data_size
+        current_E_a = incorrect_predictions/data_size
 
-        if better_E_a < E_at:
+        if current_E_a < E_at and current_E_a < optimum_E_a:
+            optimum_E_a = current_E_a
+            optimum_number_of_attributes = number_of_attributes_used
+            a, b, c, d = compute_ndc_attributes(instances_info)
             print("[ALERT] - Founded a better number of attributes: " + str(number_of_attributes_used))
+
 
         number_of_attributes_used += 1
 
+    print("[ALERT] - Optimum E_a: " + str(optimum_E_a*100))
+    print("[ALERT] - Using " + str(optimum_number_of_attributes) + " attributes.")
+
+    print("Entering the NDC phase, using correlation coefficient")
+    sigma = (a*d-b*c)/sqrt((a+b)*(c+d)*(a+c)*(b+d))
+    D_sigma = exp(-(1-sigma))
 
 if __name__ == "__main__":
     main()

@@ -4,8 +4,14 @@ from neighborhood_classifier.prediction_compute import predict_classes_in_instan
 from NDC_files.ndc_phase_functions import compute_ndc_attributes
 from math import sqrt, exp
 
+a = 0
+b = 0
+c = 0
+d = 0
+
 
 def main():
+    global a, d, b, c
     print("Loading data from CSV")
 
     file_name = 'data/vehicle.csv'
@@ -45,24 +51,27 @@ def main():
         current_E_a = incorrect_predictions/data_size
 
         if current_E_a < E_at and current_E_a < optimum_E_a:
+            a, b, c, d = compute_ndc_attributes(instances_info)
             optimum_E_a = current_E_a
             optimum_number_of_attributes = number_of_attributes_used
-            a, b, c, d = compute_ndc_attributes(instances_info)
             print("[ALERT] - Founded a better number of attributes: " + str(number_of_attributes_used))
-
 
         number_of_attributes_used += 1
 
-    print("[ALERT] - Optimum E_a: " + str(optimum_E_a*100))
+    print("[ALERT] - Optimum E_a: " + str(optimum_E_a * 100))
     print("[ALERT] - Using " + str(optimum_number_of_attributes) + " attributes.")
 
     print("Entering the NDC phase, using correlation coefficient")
 
-    sigma = (a*d-b*c)/sqrt((a+b)*(c+d)*(a+c)*(b+d))
-    D_sigma = exp(-(1-sigma))
+    sigma = (a * d - b * c) / sqrt((a + b) * (c + d) * (a + c) * (b + d))
+    D_sigma = exp(-(1 - sigma))
 
-    disagremment_measure = (b + c)/(a+b+c+d)
-    D_disagremment_measure = 1 - disagremment_measure
+    print("Using a correlation coefficient of: " + str(sigma))
+
+    harmonic_mean_inverted = (1/2)*((1/(1-optimum_E_a))+(1/(D_sigma)))
+
+    print("Harmonic mean of: " + str(1/harmonic_mean_inverted))
+
 
 if __name__ == "__main__":
     main()

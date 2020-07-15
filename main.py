@@ -8,10 +8,11 @@ a = 0
 b = 0
 c = 0
 d = 0
+maximum_harmonic_mean = 0.0
 
 
 def main():
-    global a, d, b, c
+    global a, d, b, c, maximum_harmonic_mean
     print("Loading data from CSV")
 
     file_name = 'data/vehicle.csv'
@@ -48,29 +49,24 @@ def main():
 
         print("Correct predictions using new NEC: " + str((correct_predictions / data_size) * 100) + "%")
 
-        current_E_a = incorrect_predictions/data_size
+        print("Computing a, b, c and d for NDC...")
 
-        if current_E_a < E_at and current_E_a < optimum_E_a:
-            a, b, c, d = compute_ndc_attributes(instances_info)
-            optimum_E_a = current_E_a
+        a, b, c, d = compute_ndc_attributes(instances_info)
+        sigma = (a * d - b * c) / sqrt((a + b) * (c + d) * (a + c) * (b + d))
+        D_sigma = exp(-(1 - sigma))
+
+        print("Computing harmonic mean...")
+
+        current_harmonic_mean = 1/((1/2)*((1/(1-optimum_E_a))+(1/(D_sigma))))
+
+        if current_harmonic_mean > maximum_harmonic_mean:
+            maximum_harmonic_mean = current_harmonic_mean
             optimum_number_of_attributes = number_of_attributes_used
-            print("[ALERT] - Founded a better number of attributes: " + str(number_of_attributes_used))
+            print("Found a better result for harmonic mean. With " + str(optimum_number_of_attributes) + " attributes.")
 
         number_of_attributes_used += 1
 
-    print("[ALERT] - Optimum E_a: " + str(optimum_E_a * 100))
-    print("[ALERT] - Using " + str(optimum_number_of_attributes) + " attributes.")
-
-    print("Entering the NDC phase, using correlation coefficient")
-
-    sigma = (a * d - b * c) / sqrt((a + b) * (c + d) * (a + c) * (b + d))
-    D_sigma = exp(-(1 - sigma))
-
-    print("Using a correlation coefficient of: " + str(sigma))
-
-    harmonic_mean_inverted = (1/2)*((1/(1-optimum_E_a))+(1/(D_sigma)))
-
-    print("Harmonic mean of: " + str(1/harmonic_mean_inverted))
+    print("Algorithm finished! The optimum number of attributes is " + str(optimum_number_of_attributes) + " attributes.")
 
 
 if __name__ == "__main__":

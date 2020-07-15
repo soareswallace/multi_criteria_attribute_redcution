@@ -32,14 +32,14 @@ def main():
 
     print("Going to NDER phase...")
     E_at = incorrect_predictions/data_size
-
-    number_of_attributes_used = 1
-    optimum_number_of_attributes = 1
     optimum_E_a = E_at
 
-    while number_of_attributes_used < number_of_attributes:
-        print("Generating a new data instance info for " + str(number_of_attributes_used) + " attribute")
-        instances_info = generate_instances_info(data, number_of_attributes_used, instances_info)
+    index_of_attribute_used = 0
+    index_of_best_attribute = 0
+
+    while index_of_attribute_used < number_of_attributes:
+        print("Generating a new data instance info for attribute number " + str(index_of_attribute_used))
+        instances_info = generate_instances_info(data, index_of_attribute_used, instances_info)
 
         print("Predicting classes based on new NEC...")
         instances_info, correct_predictions, incorrect_predictions = predict_classes_in_instances_info(
@@ -49,24 +49,16 @@ def main():
 
         print("Correct predictions using new NEC: " + str((correct_predictions / data_size) * 100) + "%")
 
-        print("Computing a, b, c and d for NDC...")
+        current_E_a = incorrect_predictions/data_size
 
-        a, b, c, d = compute_ndc_attributes(instances_info)
-        sigma = (a * d - b * c) / sqrt((a + b) * (c + d) * (a + c) * (b + d))
-        D_sigma = exp(-(1 - sigma))
+        if current_E_a < optimum_E_a:
+            index_of_best_attribute = index_of_attribute_used
+            optimum_E_a = current_E_a
 
-        print("Computing harmonic mean...")
+        index_of_attribute_used += 1
 
-        current_harmonic_mean = 1/((1/2)*((1/(1-optimum_E_a))+(1/(D_sigma))))
+    print("Finished NDERR. Optimum number of attributes is " + str(index_of_best_attribute) + " attributes.")
 
-        if current_harmonic_mean > maximum_harmonic_mean:
-            maximum_harmonic_mean = current_harmonic_mean
-            optimum_number_of_attributes = number_of_attributes_used
-            print("Found a better result for harmonic mean. With " + str(optimum_number_of_attributes) + " attributes.")
-
-        number_of_attributes_used += 1
-
-    print("Algorithm finished! The optimum number of attributes is " + str(optimum_number_of_attributes) + " attributes.")
 
 
 if __name__ == "__main__":

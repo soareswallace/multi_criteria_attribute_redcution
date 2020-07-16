@@ -4,6 +4,7 @@ from code_classes.Instance import Instance
 MIN_DISTANCE = 0
 MAX_DISTANCE = 1
 MAX_NEIGHBORS = 5
+NEIGHBORHOOD_RADIUS = 0.11
 
 
 def calculate_euclidean_distance(instance_a, instance_b):
@@ -16,13 +17,18 @@ def calculate_instances_neighbours(data, test_instance, number_of_attributes):
         comparison = data_instance == test_instance
         equal_arrays = comparison.all()
         if not equal_arrays:
-            distance_between_instances = calculate_euclidean_distance(test_instance[:number_of_attributes], data_instance[:number_of_attributes])
+            distance_between_instances = calculate_euclidean_distance(
+                test_instance[:number_of_attributes],
+                data_instance[:number_of_attributes]
+            )
             distances.append((data_instance, distance_between_instances))
     distances.sort(key=lambda tup: tup[1])
     neighbors = list()
+    instance_index = 0
     # TODO Implement using neighborhood radius and change MAX_NEIGHBORS to radius
-    for i in range(MAX_NEIGHBORS):
-        neighbors.append(distances[i][0])
+    while instance_index < len(distances) and distances[instance_index][1] < NEIGHBORHOOD_RADIUS:
+        neighbors.append(distances[instance_index][0])
+        instance_index += 1
     return neighbors
 
 

@@ -50,7 +50,7 @@ def main():
 
         current_E_a = incorrect_predictions/data_size
 
-        if current_E_a < E_at and current_E_a < optimum_E_a:
+        if current_E_a < optimum_E_a:
             a, b, c, d = compute_ndc_attributes(instances_info)
             optimum_E_a = current_E_a
             optimum_number_of_attributes = number_of_attributes_used
@@ -68,9 +68,9 @@ def main():
 
     print("Using a correlation coefficient of: " + str(sigma))
 
-    harmonic_mean_inverted = (1/2)*((1/(1-optimum_E_a))+(1/(D_sigma)))
+    harmonic_mean = 1/((1/2)*((1/(1-optimum_E_a))+(1/(D_sigma))))
 
-    print("Harmonic mean of: " + str(1/harmonic_mean_inverted))
+    print("Harmonic mean of: " + str(harmonic_mean))
 
 
 if __name__ == "__main__":

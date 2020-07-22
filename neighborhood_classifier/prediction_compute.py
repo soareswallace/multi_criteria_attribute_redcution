@@ -26,7 +26,11 @@ def predict_classes_in_instances_info(instances_info, using_whole_data_attribute
     incorrect_predictions = 0
 
     for instance in instances_info:
-        prediction_class = predict_class(instance)
+        if instance.get_instance_neighbors():
+            prediction_class = predict_class(instance)
+        else:
+            #don't know how to handle
+            prediction_class = -1
         if using_whole_data_attributes:
             instance.set_prediction_class_using_whole_attributes(prediction_class)
             if instance.get_prediction_class_using_whole_attributes() == instance.get_instance_class():

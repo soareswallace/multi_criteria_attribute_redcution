@@ -19,6 +19,8 @@ def main():
     data_size = len(data)
     number_of_attributes = len(data[0]) - 1
 
+    #NEC PHASE
+
     print("Initial phase using the whole attributes available.")
     print("Running NEC phase...")
     instances_info = list()
@@ -29,6 +31,8 @@ def main():
 
     print("Predictions using NEC reach " + str((correct_predictions/data_size)*100) + "%")
 
+    # NDER PHASE
+
     print("Going to NDER phase...")
     E_at = incorrect_predictions/data_size
 
@@ -37,6 +41,8 @@ def main():
     optimum_E_a = E_at
 
     while number_of_attributes_used < number_of_attributes:
+        # NDERR PHASE
+
         print("Generating a new data instance info for " + str(number_of_attributes_used) + " attribute")
         instances_info = generate_instances_info(data, number_of_attributes_used, instances_info)
 
@@ -49,6 +55,8 @@ def main():
         print("Correct predictions using new NEC: " + str((correct_predictions / data_size) * 100) + "%")
 
         current_E_a = incorrect_predictions/data_size
+
+        # COMPUTE NDC ATTRIBUTES BASED ON NEW NEC PARAMETERS, IF APPLICABLE
 
         if current_E_a < optimum_E_a:
             a, b, c, d = compute_ndc_attributes(instances_info)

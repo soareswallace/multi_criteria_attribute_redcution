@@ -1,10 +1,7 @@
 import numpy as np
 from code_classes.Instance import Instance
 
-MIN_DISTANCE = 0
-MAX_DISTANCE = 1
-MAX_NEIGHBORS = 5
-NEIGHBORHOOD_RADIUS = 0.11
+NEIGHBORHOOD_RADIUS = 0.23
 
 
 def calculate_euclidean_distance(instance_a, instance_b):
@@ -25,7 +22,6 @@ def calculate_instances_neighbours(data, test_instance, number_of_attributes):
     distances.sort(key=lambda tup: tup[1])
     neighbors = list()
     instance_index = 0
-    # TODO Implement using neighborhood radius and change MAX_NEIGHBORS to radius
     while instance_index < len(distances) and distances[instance_index][1] < NEIGHBORHOOD_RADIUS:
         neighbors.append(distances[instance_index][0])
         instance_index += 1
@@ -42,7 +38,7 @@ def generate_instances_info(data, number_of_attributes, instances_info):
         for instance in instances_info:
             instance_neighborhood = calculate_instances_neighbours(
                 data,
-                instance.get_instance_value(),
+                instance.get_instance_values(),
                 number_of_attributes
             )
             instance.update_neighborhood(instance_neighborhood)

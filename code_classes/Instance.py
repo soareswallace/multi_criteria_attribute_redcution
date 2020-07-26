@@ -8,7 +8,7 @@ class Instance:
     def set_instance_value(self, instance_value):
         self.instance_value = instance_value
 
-    def get_instance_value(self):
+    def get_instance_values(self):
         return self.instance_value
 
     def add_a_new_neighbours_to_instance_info(self, neighborhood):

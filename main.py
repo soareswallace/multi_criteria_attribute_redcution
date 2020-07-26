@@ -40,19 +40,20 @@ def main():
     optimum_number_of_attributes = 1
     optimum_E_a = E_at
 
+    print("Running NDER for each attribute to found the best one...")
     while number_of_attributes_used < number_of_attributes:
         # NDERR PHASE
 
-        print("Generating a new data instance info for " + str(number_of_attributes_used) + " attribute")
+        # print("Generating a new data instance info for " + str(number_of_attributes_used) + " attribute")
         instances_info = generate_instances_info(data, number_of_attributes_used, instances_info)
 
-        print("Predicting classes based on new NEC...")
+        # print("Predicting classes based on new NEC...")
         instances_info, correct_predictions, incorrect_predictions = predict_classes_in_instances_info(
             instances_info,
             False
         )
 
-        print("Correct predictions using new NEC: " + str((correct_predictions / data_size) * 100) + "%")
+        # print("Correct predictions using new NEC: " + str((correct_predictions / data_size) * 100) + "%")
 
         current_E_a = incorrect_predictions/data_size
 
@@ -62,7 +63,7 @@ def main():
             a, b, c, d = compute_ndc_attributes(instances_info)
             optimum_E_a = current_E_a
             optimum_number_of_attributes = number_of_attributes_used
-            print("[ALERT] - Founded a better number of attributes: " + str(number_of_attributes_used))
+            # print("[ALERT] - Founded a better number of attributes: " + str(number_of_attributes_used))
 
         number_of_attributes_used += 1
 

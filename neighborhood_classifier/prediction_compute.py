@@ -29,7 +29,7 @@ def predict_classes_in_instances_info(instances_info, using_whole_data_attribute
         if instance.get_instance_neighbors():
             prediction_class = predict_class(instance)
         else:
-            #don't know how to handle because there is no neighbors. Set prediction to -1
+            #don't know how to handle because there is no neighbors in range. Set prediction to -1
             prediction_class = -1
         if using_whole_data_attributes:
             instance.set_prediction_class_using_whole_attributes(prediction_class)

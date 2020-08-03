@@ -3,6 +3,7 @@ from neighborhood_classifier.nec_phase_functions import generate_instances_info
 from neighborhood_classifier.prediction_compute import predict_classes_in_instances_info
 from NDC_files.ndc_phase_functions import compute_ndc_attributes
 from math import sqrt, exp
+from processing_data.feature_reduction import best_features
 
 a = 0
 b = 0
@@ -14,17 +15,17 @@ def main():
     global a, d, b, c
     print("Loading data from CSV")
 
-    file_name = 'data/vehicle.csv'
-    data = load_from_data(file_name).to_numpy()
-    data_size = len(data)
-    number_of_attributes = len(data[0]) - 1
+    file_name = 'data/heart.csv'
+    data = load_from_data(file_name)
+    data_size = len(data.to_numpy())
+    number_of_attributes = len(data.to_numpy()[0]) - 1
 
     #NEC PHASE
 
     print("Initial phase using the whole attributes available.")
     print("Running NEC phase...")
     instances_info = list()
-    instances_info = generate_instances_info(data, number_of_attributes, instances_info)
+    instances_info = generate_instances_info(data.to_numpy(), number_of_attributes, instances_info)
 
     print("Predicting classes based on NEC...")
     instances_info, correct_predictions, incorrect_predictions = predict_classes_in_instances_info(instances_info)
@@ -40,12 +41,14 @@ def main():
     optimum_number_of_attributes = 1
     optimum_E_a = E_at
 
+    top_features = best_features(data, number_of_attributes)
+
     print("Running NDER for each attribute to found the best one...")
     while number_of_attributes_used < number_of_attributes:
         # NDERR PHASE
 
         # print("Generating a new data instance info for " + str(number_of_attributes_used) + " attribute")
-        instances_info = generate_instances_info(data, number_of_attributes_used, instances_info)
+        instances_info = generate_instances_info(data.to_numpy(), number_of_attributes_used, instances_info)
 
         # print("Predicting classes based on new NEC...")
         instances_info, correct_predictions, incorrect_predictions = predict_classes_in_instances_info(
